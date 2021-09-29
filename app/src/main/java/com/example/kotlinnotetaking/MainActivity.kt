@@ -4,26 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinnotetaking.adapter.NoteKotlinAdapter
-import com.example.kotlinnotetaking.databinding.ActivityAddNoteBinding
 import com.example.kotlinnotetaking.databinding.ActivityMainBinding
 import com.example.kotlinnotetaking.entity.Note
-import com.example.kotlinnotetaking.viewModel.NoteKotlinViewModel
-import com.example.kotlinnotetaking.viewModel.NoteKotlinViewModelFactory
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.kodein.di.Kodein
+import com.example.kotlinnotetaking.viewModel.NoteKotlinMainViewModel
+import com.example.kotlinnotetaking.viewModel.NoteKotlinMainViewModelFactory
+
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -32,11 +27,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
                                  //instance here refers to our kodein
-    private val factory: NoteKotlinViewModelFactory by instance()
+    private val factory: NoteKotlinMainViewModelFactory by instance()
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var noteViewModel : NoteKotlinViewModel
+    private lateinit var noteMainViewModel : NoteKotlinMainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +49,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         binding.recyclerView.adapter = noteAdapter
 
         //android system will destroy this view model when the activity is finished
-        noteViewModel = ViewModelProvider(this, factory).get(NoteKotlinViewModel::class.java)
+        noteMainViewModel = ViewModelProvider(this, factory).get(NoteKotlinMainViewModel::class.java)
 
 
-        noteViewModel.getAllNotes().observe(this, {
+        noteMainViewModel.getAllNotes().observe(this, {
             noteAdapter.submitList(it)
         })
 
@@ -79,7 +74,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                noteViewModel.delete(noteAdapter.getNotesAt(viewHolder.adapterPosition))
+                noteMainViewModel.delete(noteAdapter.getNotesAt(viewHolder.adapterPosition))
                 Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
             }
 
@@ -114,7 +109,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             val note = title?.let { description?.let { it1 -> priority?.let { it2 ->
                 Note(it, it1, it2)
             } } }
-            note?.let { noteViewModel.insert(it) }
+            note?.let { noteMainViewModel.insert(it) }
         }
     }
 
@@ -140,7 +135,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
             if (noteId != null) {
                 note?.id = noteId
             }
-            note?.let { noteViewModel.update(it) }
+            note?.let { noteMainViewModel.update(it) }
 
             Toast.makeText(this, "Note updated successfully", Toast.LENGTH_SHORT).show()
         }
@@ -156,7 +151,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_all_notes -> {
-                noteViewModel.deleteAllNotes()
+                noteMainViewModel.deleteAllNotes()
                 true
             }
             else ->  super.onOptionsItemSelected(item)

@@ -12,7 +12,9 @@
         android:name=".application.NoteApplication">
         <activity
             android:name=".AddEditNoteActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">

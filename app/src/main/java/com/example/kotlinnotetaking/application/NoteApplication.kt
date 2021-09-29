@@ -3,7 +3,7 @@ package com.example.kotlinnotetaking.application
 import android.app.Application
 import com.example.kotlinnotetaking.repository.NoteRepository
 import com.example.kotlinnotetaking.roomDatabase.NoteKotlinDatabase
-import com.example.kotlinnotetaking.viewModel.NoteKotlinViewModelFactory
+import com.example.kotlinnotetaking.viewModel.NoteKotlinMainViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -18,7 +18,7 @@ class NoteApplication: Application(), KodeinAware {
         import(androidXModule(this@NoteApplication))
         bind() from singleton { NoteKotlinDatabase(instance()) }
         bind() from singleton { NoteRepository(instance()) }
-        bind() from provider { NoteKotlinViewModelFactory(instance())}
+        bind() from provider { NoteKotlinMainViewModelFactory(instance())}
     }
 
 }

@@ -10,7 +10,7 @@ import com.example.kotlinnotetaking.repository.NoteRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class NoteKotlinViewModel(private val repository: NoteRepository) : ViewModel() {
+class NoteKotlinMainViewModel(private val repository: NoteRepository) : ViewModel() {
 
     /**usually we would do database operations in coroutine IO scope. But Room persistence library
     provides main safety, so we are fine to launch in the main context.

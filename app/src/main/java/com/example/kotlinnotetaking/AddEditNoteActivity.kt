@@ -4,13 +4,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinnotetaking.databinding.ActivityAddNoteBinding
 import com.example.kotlinnotetaking.databinding.ActivityMainBinding
+import com.example.kotlinnotetaking.viewModel.NoteKotlinAddEditViewModel
 
 class AddEditNoteActivity : AppCompatActivity() {
 
@@ -31,13 +34,14 @@ class AddEditNoteActivity : AppCompatActivity() {
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val viewModel = ViewModelProvider(this).get(NoteKotlinAddEditViewModel::class.java)
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.setTitleTextColor(Color.BLACK)
         setSupportActionBar(toolbar)
 
         binding.numberPickerPriority.minValue = 1
         binding.numberPickerPriority.maxValue = 10
-
 
 
         val intent = intent
@@ -52,6 +56,14 @@ class AddEditNoteActivity : AppCompatActivity() {
             binding.tvToolbarTitle.text = "Add Note"
             binding.btnSubmit.text = "Submit"
         }
+
+        binding.numberPickerPriority.setOnValueChangedListener { _, _, newVal
+            -> viewModel.setNumber(newVal) }
+
+        viewModel.currentNumber.observe(this, {
+            Log.d("TAG", "currentNumberObserve: $it")
+            binding.numberPickerPriority.value = it
+        })
 
         binding.btnSubmit.setOnClickListener {
             saveNote()
